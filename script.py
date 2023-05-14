@@ -1,4 +1,5 @@
 import os
+import random
 import openai
 
 from langchain.document_loaders import PyPDFLoader
@@ -9,6 +10,8 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.llms import OpenAI
 from dotenv import load_dotenv
+
+from constants import CHROMA_SETTINGS
 
 load_dotenv()
 
@@ -65,8 +68,10 @@ def evaluate_quizzes(query, result, user_answer):
     return reply
 
 if __name__ == "__main__":
-    # Load document
+     # Load document
     openai_api_key = os.environ.get("OPENAI_API_KEY")
+    persist_directory = os.environ.get("PERSIST_DIRECTORY")
+
     loader = PyPDFLoader("./COMP3221-W11-Lecture.pdf")
     documents = loader.load()
 
@@ -77,8 +82,7 @@ if __name__ == "__main__":
     # Create the OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
 
-    # Create the vectorstore to use as the index
-    db = Chroma.from_documents(texts, embeddings)
+    db = Chroma(persist_directory=persist_directory, embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
 
     # Expose this index in a retriever interface
     retriever = db.as_retriever(search_type="similarity", search_kwargs={"k":2})
@@ -86,7 +90,9 @@ if __name__ == "__main__":
     # Createa a chain to answer questions
     qa = RetrievalQA.from_chain_type(llm=OpenAI(), chain_type="stuff", retriever=retriever, return_source_documents=True)
 
-    query = generate_quizzes(texts[5])
+    random_index = random.randrange(len(texts))
+
+    query = generate_quizzes(texts[random_index])
     print ('********************\n\n')
     print('GENERATED QUESTION:', query, '\n\n')
     result = qa({"query": query})
