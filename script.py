@@ -85,7 +85,7 @@ if __name__ == "__main__":
     db = Chroma(persist_directory=persist_directory, embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
 
     # Expose this index in a retriever interface
-    retriever = db.as_retriever(search_type="similarity", search_kwargs={"k":2})
+    retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 2 })
 
     # Createa a chain to answer questions
     qa = RetrievalQA.from_chain_type(llm=OpenAI(), chain_type="stuff", retriever=retriever, return_source_documents=True)
