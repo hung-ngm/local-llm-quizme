@@ -15,6 +15,7 @@ def main():
     openai_api_key = os.environ.get("OPENAI_API_KEY")
     persist_directory = os.environ.get("PERSIST_DIRECTORY")
 
+    # Change this for your file
     loader = PyPDFLoader("./COMP3221-W11-Lecture.pdf")
     documents = loader.load()
 
