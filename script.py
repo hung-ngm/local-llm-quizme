@@ -90,17 +90,18 @@ if __name__ == "__main__":
     # Createa a chain to answer questions
     qa = RetrievalQA.from_chain_type(llm=OpenAI(), chain_type="stuff", retriever=retriever, return_source_documents=True)
 
-    random_index = random.randrange(len(texts))
+    while True:
+        random_index = random.randrange(len(texts))
 
-    query = generate_quizzes(texts[random_index])
-    print ('********************\n\n')
-    print('GENERATED QUESTION:', query, '\n\n')
-    result = qa({"query": query})
-    print ('********************\n')
-    user_answer = input("Enter your answer: ")
-    print ('\n********* Generating Feedback ***********\n')
-    feedback = evaluate_quizzes(query, result, user_answer)
-    print("FEEDBACK:", feedback)
+        query = generate_quizzes(texts[random_index])
+        print ('********************\n\n')
+        print('GENERATED QUESTION:', query, '\n\n')
+        result = qa({"query": query})
+        print ('********************\n')
+        user_answer = input("Enter your answer: ")
+        print ('\n********* Generating Feedback ***********\n')
+        feedback = evaluate_quizzes(query, result, user_answer)
+        print("FEEDBACK:", feedback)
 
-    print ('\n\n\n********* Complete Answer ***********\n')  
-    print('CORRECT ANSWER:', result['result'])
+        print ('\n\n\n********* Complete Answer ***********\n')  
+        print('CORRECT ANSWER:', result['result'])
